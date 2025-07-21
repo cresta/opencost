@@ -62,14 +62,21 @@ func validate(cli prometheus.Client, q string, config *OpenCostPrometheusConfig)
 
 		if job == config.JobName {
 			return &PrometheusMetadata{
-				Running:            running,
+				Running:            true,
 				KubecostDataExists: true,
 			}, err
 		}
 	}
 
+	if !running {
+		return &PrometheusMetadata{
+			Running:            false,
+			KubecostDataExists: false,
+		}, fmt.Errorf("up query does not have job names")
+	}
+
 	return &PrometheusMetadata{
-		Running:            running,
+		Running:            true,
 		KubecostDataExists: false,
 	}, nil
 }
